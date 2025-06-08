@@ -12,7 +12,8 @@ import {
 
 import _ from 'lodash';
 
-import SplitPane from "react-split-pane";
+import { Allotment } from "allotment";
+import "allotment/dist/style.css";
 import {
 
     Typography,
@@ -71,38 +72,47 @@ export const DataFormulatorFC = ({ }) => {
 
     let $tableRef = React.createRef<SelectableGroup>();
 
-    const visPane = (// @ts-ignore
-        <SplitPane split="horizontal"
-            minSize={100} size={visPaneSize}
+    const visPane = (
+        <Allotment 
+            vertical
             className={'vis-split-pane'}
-            style={{}}
-            pane2Style={{overflowY: "hidden"}}
-            onDragFinished={size => { dispatch(dfActions.setVisPaneSize(size)) }}>
-            {visPaneMain}
-            <Box className="table-box">
-                <FreeDataViewFC $tableRef={$tableRef}/>
-            </Box>
-        </SplitPane>);
+            defaultSizes={[visPaneSize, 100]}
+            onChangeEnd={(sizes) => { dispatch(dfActions.setVisPaneSize(sizes![0])) }}>
+            <Allotment.Pane>
+                {visPaneMain}
+            </Allotment.Pane>
+            <Allotment.Pane>
+                <Box className="table-box" sx={{overflowY: "hidden"}}>
+                    <FreeDataViewFC $tableRef={$tableRef}/>
+                </Box>
+            </Allotment.Pane>
+        </Allotment>);
 
-    const splitPane = ( // @ts-ignore
-        <SplitPane split="vertical"
-            maxSize={440}
-            minSize={320}
-            primary="second"
-            size={displayPanelSize}
+    const splitPane = (
+        <Allotment 
+            defaultSizes={[100 - (displayPanelSize / window.innerWidth * 100), displayPanelSize / window.innerWidth * 100]}
+            minSizes={[320, 280]}
+            maxSizes={[Infinity, 440]}
             style={{width: "100%", height: '100%', position: 'relative'}}
-            onDragFinished={size => { dispatch(dfActions.setDisplayPanelSize(size)) }}>
-            <Box sx={{display: 'flex', width: `100%`, height: '100%'}}>
-                {tables.length > 0 ? 
-                        <DataThread />   //<Carousel />
-                        : ""} 
-                    {visPane}
-            </Box>
-            <Box className="data-editor">
-                {conceptEncodingPanel}
-                {/* <InfoPanelFC $tableRef={$tableRef}/> */}
-            </Box>
-        </SplitPane>);
+            onChangeEnd={(sizes) => { 
+                const newSize = (sizes![1] / 100) * window.innerWidth;
+                dispatch(dfActions.setDisplayPanelSize(newSize));
+            }}>
+            <Allotment.Pane>
+                <Box sx={{display: 'flex', width: `100%`, height: '100%'}}>
+                    {tables.length > 0 ? 
+                            <DataThread />   //<Carousel />
+                            : ""} 
+                        {visPane}
+                </Box>
+            </Allotment.Pane>
+            <Allotment.Pane>
+                <Box className="data-editor">
+                    {conceptEncodingPanel}
+                    {/* <InfoPanelFC $tableRef={$tableRef}/> */}
+                </Box>
+            </Allotment.Pane>
+        </Allotment>);
 
     const fixedSplitPane = ( 
         <Box sx={{display: 'flex', flexDirection: 'row', height: '100%'}}>
