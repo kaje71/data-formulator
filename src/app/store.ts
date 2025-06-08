@@ -4,7 +4,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { dataFormulatorReducer } from './dfSlice';
 
-import { persistReducer } from 'redux-persist'
+import { persistReducer } from 'reduxjs-toolkit-persist'
 import localforage from 'localforage';
 
 export type AppDispatch = typeof store.dispatch

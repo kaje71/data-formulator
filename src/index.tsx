@@ -9,8 +9,8 @@ import { Provider } from 'react-redux'
 
 import { AppFC } from './app/App';
 
-import { PersistGate } from 'redux-persist/integration/react'
-import { persistStore } from 'redux-persist'
+import { PersistGate } from 'reduxjs-toolkit-persist/integration/react'
+import { persistStore } from 'reduxjs-toolkit-persist'
 import { createRoot } from 'react-dom/client';
 
 let persistor = persistStore(store);
